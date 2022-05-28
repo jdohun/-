@@ -147,6 +147,6 @@ int main() {
 	Prim(10, weight_matrix, F);
 	
 	for (int i = 0; i < 9; ++i) {
-		cout << F[i].IofVnear+1 << "번째 마디와 " << F[i].IofNVN+1  << "번째 마디를 잇고, 가중치 값은 " << F[i].distance  << endl;
+		printf("%d. %d번째 마디와 %d번째 마디를 잇고, 가중치 값은 %d\n", i+1, F[i].IofVnear + 1, F[i].IofNVN + 1, F[i].distance);
 	}
 }
