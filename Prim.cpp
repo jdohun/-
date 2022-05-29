@@ -81,7 +81,7 @@ struct edge {	// vnear번째 마디와 nearest[vnear]번째 마디를 잇는 이음선
 
 // Prim Algorithm
 void Prim(int n, int(*W)[10], edge* F) { // 노드의 개수, 가중치포함 그래프, 
-	int i, j;	// 반복문에 쓰일 변수
+	int i;	// 반복문에 쓰일 변수
 	int vnear;	// F(MST의 이음선 집합(E)의 부분집합)에 있는 edge들에서 가장 가까운 거리에 있는 노드의 index	// F : 이음선의 집합, 공집합으로 초기화 //
 	int min;	// 최소 거리(가중치)
 	edge e;		// vnear번째 마디와 nearest[vnear]번째 마디를 잇는 이음선
@@ -122,6 +122,9 @@ void Prim(int n, int(*W)[10], edge* F) { // 노드의 개수, 가중치포함 그래프,
 			}
 		}
 	}
+
+	delete[] nearest;
+	delete[] distance;
 }
 
 int main() {
@@ -141,12 +144,14 @@ int main() {
 	};
 
 	// MST's maximum edge number is n-1 : 공식, MST의 이음선은 최대가 n-1개이다.
-	edge* F = new edge[9]; // MST의 edge를 담을 배열
-	edge e;
-	F[0] = e;
+	edge* F = new edge[9]; // MST의 edge를 담을 배열, 공집합
 	Prim(10, weight_matrix, F);
 	
 	for (int i = 0; i < 9; ++i) {
 		printf("%d. %d번째 마디와 %d번째 마디를 잇고, 가중치 값은 %d\n", i+1, F[i].IofVnear + 1, F[i].IofNVN + 1, F[i].distance);
 	}
+
+	delete[] F;
+
+	return 0;
 }
