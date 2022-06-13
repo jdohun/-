@@ -13,28 +13,28 @@
 	D[vi][A] = A에 속한 도시를 각각 한 번씩만 거쳐서 vi에서 v1으로 가는 최단경로의 길이
 
 	G : 마디의 유한 집합 V 와 V에 속한 마디의 쌍의 집합 E로 구성됨, G = (V, E)
-	E : 이음선의 집합
+	E : 최소비용 신장트리 이음선의 집합
 	T : G와 같은 마디 V를 가지지만, 이음선은 F를 가짐, T = (V, F)
-	F : E의 부분 집합
+	F : E의 부분 집합(E의 값이 부분적으로 추가되기 때문에 부분집합이다) : 최소 비용 이음선을 찾아내서 저장할 그릇 -> 최종적으로는 E와 같아진다.
 
 	이음선 : 마디를 잇는 선
-	가중치 : 이음선과 관련된 값 ( 음수가 아니라고 가정함, 보통 거리를 나타내는 경우가 많음)
+	가중치 : 이음선과 관련된 값(음수가 아니라고 가정함, 보통 거리를 나타내는 경우가 많음)
 	directed graph / digraph(방향 그래프) : 이음선에 방향이 있는 그래프
-	weighted graph  (가중치포함 그래프) : 이음선에 가중치가 있는 그래프
-	path : 이음선이 있는 마디의 나열. ex) [v1, v4, v3]는 v1 -> v4 -> v3
+	weighted graph(가중치포함 그래프) : 이음선에 가중치가 있는 그래프
+	path : 이음선이 있는 마디의 나열.ex)[v1, v4, v3]는 v1->v4->v3
 	length(경로의 길이) : 경로 상에 있는 가중치의 합
 
 /**/
 	W[i][j] {
-		1. 이음선 가중치	: vi에서 vj로 가는 이음선이 있는 경우
-		2. 무한				:  "	"			"		없는 경우
-		3. 0				: i = j 인 경우
+		1. 이음선 가중치 : vi에서 vj로 가는 이음선이 있는 경우
+		2. 무한 : vi에서 vj로 가는 이음선이 없는 경우
+		3. 0 : i = j(자기 자신)인 경우
 	}	
 
 	D(k)[][]
 /**/
 	F = 공집합;		// F : 이음선의 집합, 공집합으로 초기화
-	Y = { v1 };		// Y : 최소 가중치를 검출한 마디의 집합, 가장 처음에는 첫째마디부터 검사를 시작하기 위해 
+	Y = { v1 };		// Y : 최소 가중치를 이미 검출한 마디의 집합, 가장 처음에는 첫째마디부터 검사를 시작하기 위해 v1을 포함하여 시작한다.
 /**/
 
 
@@ -71,7 +71,6 @@ void Floyd2(int n, const number W[][], number D[][], index P[][]) {
 		}
 	}
 }
-
 
 /**/
 연습문제2
@@ -151,6 +150,37 @@ void Prim(int n, const number W[][], set_of_edges& F) {
 	}
 }
 
+	// 이음선 정보 정리
+	vector<edge> v;
+	v.push_back(edge(1, 2, 32));
+	v.push_back(edge(1, 4, 17));
+	v.push_back(edge(2, 5, 45));
+	v.push_back(edge(3, 4, 18));
+	v.push_back(edge(3, 7, 5));
+	v.push_back(edge(4, 5, 10));
+	v.push_back(edge(4, 8, 3));
+	v.push_back(edge(5, 6, 28));
+	v.push_back(edge(5, 9, 25));
+	v.push_back(edge(6, 10, 6));
+	v.push_back(edge(7, 8, 59));
+	v.push_back(edge(8, 9, 4));
+	v.push_back(edge(9, 10, 12));
+
+	vector<edge> data; // 간선 데이터 배열
+	data.push_back(edge(0, 1, 32)); // 정점0과 정점1의 간선 비용32
+	data.push_back(edge(0, 3, 17));
+	data.push_back(edge(1, 4, 45));
+	data.push_back(edge(2, 3, 18));
+	data.push_back(edge(2, 6, 5));
+	data.push_back(edge(3, 4, 10));
+	data.push_back(edge(3, 7, 3));
+	data.push_back(edge(4, 5, 28));
+	data.push_back(edge(4, 8, 25));
+	data.push_back(edge(5, 9, 6));
+	data.push_back(edge(6, 7, 59));
+	data.push_back(edge(7, 8, 4));
+	data.push_back(edge(8, 9, 12));
+
 // Kruskal Algoirtm
 void kruskal(int n, int m, set_of_edges E, set_of_edges& F) {
 	index i, j;
@@ -172,6 +202,47 @@ void kruskal(int n, int m, set_of_edges E, set_of_edges& F) {
 	}
 }
 
+// ppt에 있는 Kruskal 알고리즘
+void kruskal2(int n, int m, const number W[], number D[]) {
+	index i, j, k;
+	index p, q;
+	index parents[0..n - 1];
+	index edges[0..n * (n - 1) / 2 - 1];
+
+	initialize D[] to ∞;
+
+	for (i = 0; i < n; i++)
+		parents[i] = i;
+
+	for (i = 0; i < n; i++)
+		for (j = i + 1; j < n; j++)
+			if (W[i * n + j] < ∞)
+				edges[num_edges++] = i * n + j;
+	sort edges based on W[edges[]]
+		for (e = 0; e < num_edges; e++) {
+			k = edges[e];
+			i = k / n;
+			j = k % n;
+			p = find(parents, i);
+			q = find(parents, j);
+			if (p != q) {
+				if (p < q)
+					parents[q] = p;
+				else
+					parents[p] = q;
+				D[k] = D[j * n + i] = W[k];
+			}
+		}
+}
+
+index find(index parents[], index i) {
+	if (parents[i] == i)
+		return i;
+	else
+		return find(parents, parents[i]);
+}
+
+
 // Dijkstra Algorithm
 void dijkstra(int n, const number W[][], set_of_edges& F) {
 	index i, vnear;
@@ -192,15 +263,16 @@ void dijkstra(int n, const number W[][], set_of_edges& F) {
 				min = length[i];
 				vnear = i;
 			}
-			e = touch[vnear]가 인덱스인 마디에서 vnear가 인데스인 마디로 가는 이음선;
-			e를 F에 추가;
-			for (i = 2; i <= n; ++i) {
-				if (length[vnear] + W[vnear][i] < length[i]) {
-					length[i] = length[vnear] + W[vnear][i];
-					touch[i] = vnear;			// Y에 속하지 않는 각마디에 대해서,
-				}								// 최단경로를 바꾼다.
-				length[vnear] = -1;				// vnear가 인덱스인 마디를 Y에 추가한다.
-			}
+		}
+
+		e = touch[vnear]가 인덱스인 마디에서 vnear가 인데스인 마디로 가는 이음선;
+		e를 F에 추가;
+		for (i = 2; i <= n; ++i) {
+			if (length[vnear] + W[vnear][i] < length[i]) {
+				length[i] = length[vnear] + W[vnear][i];
+				touch[i] = vnear;			// Y에 속하지 않는 각마디에 대해서,
+			}								// 최단경로를 바꾼다.
+			length[vnear] = -1;				// vnear가 인덱스인 마디를 Y에 추가한다.
 		}
 	}
 }
